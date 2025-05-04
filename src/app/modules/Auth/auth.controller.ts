@@ -32,7 +32,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "User loggedIn successfuly!",
+    message: "Access token generated successfuly!",
     data: result,
     // data: {
     //   accessToken: result.accessToken,
@@ -41,7 +41,46 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const changePassword = catchAsync(
+  async (req: Request & { user?: any }, res: Response) => {
+    const user = req.user;
+    const result = await AuthServices.changePassword(user, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Password changed  successfuly!",
+      data: result,
+    });
+  }
+);
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  await AuthServices.forgotPasswordIntoDB(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Check your email!",
+    data: null,
+  });
+});
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization || "";
+
+  await AuthServices.resetPasswordIntoDB(token, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password Reset!",
+    data: null,
+  });
+});
+
 export const AuthControllers = {
   loginUser,
   refreshToken,
+  changePassword,
+  forgotPassword,
+  resetPassword,
 };
