@@ -142,6 +142,18 @@ exports.Prisma.AdminScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.MemberScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  profilePhoto: 'profilePhoto',
+  contactNumber: 'contactNumber',
+  address: 'address',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -170,7 +182,8 @@ exports.UserStatus = exports.$Enums.UserStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Admin: 'Admin'
+  Admin: 'Admin',
+  Member: 'Member'
 };
 
 /**
