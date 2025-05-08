@@ -14,18 +14,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthServices = void 0;
 const config_1 = __importDefault(require("../../../config"));
-const prisma_1 = require("../../../generated/prisma");
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const Prisma_1 = __importDefault(require("../../../shared/Prisma"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const emailSender_1 = __importDefault(require("./emailSender"));
 const ApiError_1 = __importDefault(require("../../errors/ApiError"));
 const http_status_1 = __importDefault(require("http-status"));
+const client_1 = require("@prisma/client");
 const loginUserIntoDB = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield Prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
-            status: prisma_1.UserStatus.ACTIVE,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const isCorrectPassword = yield bcrypt_1.default.compare(payload.password, userData.password);
@@ -57,7 +57,7 @@ const refreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield Prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: decodedData.email,
-            status: prisma_1.UserStatus.ACTIVE,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const accessToken = jwtHelpers_1.jwtHelpers.generateToken({
@@ -73,7 +73,7 @@ const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, func
     const userData = yield Prisma_1.default.user.findFirstOrThrow({
         where: {
             email: user.email,
-            status: prisma_1.UserStatus.ACTIVE,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const isCorrectPassword = yield bcrypt_1.default.compare(payload.oldPassword, userData.password);
@@ -98,7 +98,7 @@ const forgotPasswordIntoDB = (payload) => __awaiter(void 0, void 0, void 0, func
     const userData = yield Prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
-            status: prisma_1.UserStatus.ACTIVE,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const resetPassToken = jwtHelpers_1.jwtHelpers.generateToken({
@@ -124,7 +124,7 @@ const resetPasswordIntoDB = (token, payload) => __awaiter(void 0, void 0, void 0
     const userData = yield Prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: payload.id,
-            status: prisma_1.UserStatus.ACTIVE,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const isValidToken = jwtHelpers_1.jwtHelpers.verifyToken(token, config_1.default.jwt.reset_pass_secret);

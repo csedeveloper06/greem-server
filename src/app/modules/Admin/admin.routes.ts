@@ -2,8 +2,8 @@ import { AdminControllers } from "./admin.controller";
 import validateRequest from "../../middlewares/validateRequest";
 import { adminValidationsSchema } from "./admin.validation";
 import express from "express";
-import { UserRole } from "../../../generated/prisma";
 import auth from "../../middlewares/auth";
+import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 

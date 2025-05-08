@@ -1,12 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,57 +9,109 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
-  email String @unique
-  password String
-  role UserRole
-  needPasswordChange Boolean @default(true)
-  status UserStatus @default(ACTIVE)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  admin Admin?
-  member Member?
+  id                 String     @id @default(uuid())
+  email              String     @unique
+  password           String
+  role               UserRole   @default(USER)
+  needPasswordChange Boolean    @default(true)
+  status             UserStatus @default(ACTIVE)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  admin              Admin?
+  member             Member?
+  ideas              Idea[]
+  Vote               Vote[]
 
   @@map("users")
-
-  
 }
 
 model Admin {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  profilePhoto String?
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  profilePhoto  String?
   contactNumber String
-  isDeleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   user User @relation(fields: [email], references: [email])
 
   @@map("admins")
 }
 
-
 model Member {
-  id String @id @default(uuid())
-   name String
-  email String @unique
-  profilePhoto String?
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  profilePhoto  String?
   contactNumber String
-  address String?
-  isDeleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  address       String?
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   user User @relation(fields: [email], references: [email])
 
- @@map("members")
+  @@map("members")
+}
+
+model Category {
+  id             String         @id @default(uuid())
+  categoryStatus CategoryStatus
+  icon           String?
+  ideas          Idea[]
+
+  @@map("categories")
+}
+
+model Idea {
+  id           String       @id @default(uuid())
+  title        String
+  categoryId   String
+  authorId     String
+  description  String
+  productPhoto String
+  publish      Boolean      @default(false)
+  price        Float?
+  reviewStatus ReviewStatus @default(UNDER_REVIEW)
+  isPaid       Boolean      @default(false)
+  user         User         @relation(fields: [authorId], references: [id])
+  category     Category     @relation(fields: [categoryId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  Vote         Vote[]
+
+  @@map("ideas")
+}
+
+model Comment {
+  id      String @id @default(uuid())
+  content String
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  voteType  VoteType
+  userId    String
+  ideaId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  idea Idea @relation(fields: [ideaId], references: [id])
+
+  @@unique([userId, ideaId])
+}
+
+enum VoteType {
+  UP
+  DOWN
 }
 
 enum UserRole {
+  USER
   SUPER_ADMIN
-  ADMIN 
+  ADMIN
   MEMBER
 }
 
@@ -75,3 +121,14 @@ enum UserStatus {
   DELETED
 }
 
+enum ReviewStatus {
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+enum CategoryStatus {
+  WASTE
+  TRANSPORT
+  ENERGY
+}

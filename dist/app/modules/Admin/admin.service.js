@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminServices = void 0;
-const prisma_1 = require("../../../generated/prisma");
+const client_1 = require("@prisma/client");
 const pagination_1 = require("../../../helpers/pagination");
 const Prisma_1 = __importDefault(require("../../../shared/Prisma"));
 const admin_constant_1 = require("./admin.constant");
@@ -147,7 +147,7 @@ const softDeleteAdminFromDB = (id) => __awaiter(void 0, void 0, void 0, function
                 email: adminDeletedData.email,
             },
             data: {
-                status: prisma_1.UserStatus.DELETED,
+                status: client_1.UserStatus.DELETED,
             },
         });
         return adminDeletedData;

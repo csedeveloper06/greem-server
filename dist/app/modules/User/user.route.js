@@ -7,26 +7,24 @@ exports.UserRoutes = void 0;
 const express_1 = __importDefault(require("express"));
 const user_controller_1 = require("./user.controller");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
-const prisma_1 = require("../../../generated/prisma");
 const fileUploader_1 = require("../../../helpers/fileUploader");
-const cloudinary_1 = require("cloudinary");
+const User_validation_1 = require("./User.validation");
+const validateRequest_1 = __importDefault(require("../../middlewares/validateRequest"));
+const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
-cloudinary_1.v2.config({
-    cloud_name: "dnzqu88pz",
-    secure: true,
-    api_key: "792482122157778",
-    api_secret: "kkjhxerszs_vfdxctryjlk",
+router.get("/", (0, auth_1.default)(client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN), user_controller_1.UserControllers.getAllUsers);
+router.get("/me", (0, auth_1.default)(client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN, client_1.UserRole.MEMBER), user_controller_1.UserControllers.getMyProfile);
+router.post("/create-admin", (0, auth_1.default)(client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN), fileUploader_1.fileUploader.upload.single("file"), (req, res, next) => {
+    req.body = User_validation_1.UserValidations.createAdmin.parse(JSON.parse(req.body.data));
+    return user_controller_1.UserControllers.createAdmin(req, res, next);
 });
-// Upload an image
-cloudinary_1.v2.uploader.upload("https://i.ibb.co.com/h7PVFkH/mental2.jpg", {
-    public_id: "mental2",
-}, function (error, result) {
-    if (error) {
-        console.error("Upload error:", error);
-    }
-    else {
-        console.log("Upload result:", result);
-    }
+router.post("/create-member", fileUploader_1.fileUploader.upload.single("file"), (req, res, next) => {
+    req.body = User_validation_1.UserValidations.createMember.parse(JSON.parse(req.body.data));
+    return user_controller_1.UserControllers.createMember(req, res, next);
 });
-router.post("/", (0, auth_1.default)(prisma_1.UserRole.SUPER_ADMIN, prisma_1.UserRole.ADMIN), fileUploader_1.fileUploader.upload.single("file"), user_controller_1.UserControllers.createAdmin);
+router.patch("/:id/status", (0, auth_1.default)(client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN), (0, validateRequest_1.default)(User_validation_1.UserValidations.updateStatus), user_controller_1.UserControllers.changeProfileStatus);
+router.patch("/update-my-profile", (0, auth_1.default)(client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN, client_1.UserRole.MEMBER), fileUploader_1.fileUploader.upload.single("file"), (req, res, next) => {
+    req.body = JSON.parse(req.body.data);
+    return user_controller_1.UserControllers.updateMyProfile(req, res, next);
+});
 exports.UserRoutes = router;

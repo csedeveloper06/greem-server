@@ -1,4 +1,4 @@
-import { Admin, Prisma, UserStatus } from "../../../generated/prisma";
+import { Admin, Prisma, UserStatus } from "@prisma/client";
 import { paginationHelper } from "../../../helpers/pagination";
 import prisma from "../../../shared/Prisma";
 import { TPaginationsOptions } from "../../interfaces/paginationInterface";

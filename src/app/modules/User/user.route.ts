@@ -1,10 +1,10 @@
 import express, { NextFunction, Request, Response } from "express";
 import { UserControllers } from "./user.controller";
 import auth from "../../middlewares/auth";
-import { UserRole } from "../../../generated/prisma";
 import { fileUploader } from "../../../helpers/fileUploader";
 import { UserValidations } from "./User.validation";
 import validateRequest from "../../middlewares/validateRequest";
+import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 

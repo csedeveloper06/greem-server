@@ -1,5 +1,5 @@
+import { UserStatus } from "@prisma/client";
 import { z } from "zod";
-import { UserStatus } from "../../../generated/prisma";
 
 const createAdmin = z.object({
   password: z.string({

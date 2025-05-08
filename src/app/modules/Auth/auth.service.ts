@@ -1,12 +1,12 @@
 import { Secret } from "jsonwebtoken";
 import config from "../../../config";
-import { UserStatus } from "../../../generated/prisma";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import prisma from "../../../shared/Prisma";
 import bcrypt from "bcrypt";
 import emailSender from "./emailSender";
 import ApiError from "../../errors/ApiError";
 import httpStatus from "http-status";
+import { UserStatus } from "@prisma/client";
 
 const loginUserIntoDB = async (payload: {
   email: string;

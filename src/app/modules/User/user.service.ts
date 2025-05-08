@@ -1,4 +1,3 @@
-import { Admin, Member, UserRole, UserStatus } from "../../../generated/prisma";
 import bcrypt from "bcrypt";
 import prisma from "../../../shared/Prisma";
 import { fileUploader } from "../../../helpers/fileUploader";
@@ -6,9 +5,9 @@ import { TFile } from "../../interfaces/file";
 import { Request } from "express";
 import { TPaginationsOptions } from "../../interfaces/paginationInterface";
 import { paginationHelper } from "../../../helpers/pagination";
-import { Prisma } from "../../../generated/prisma";
 import { userSearchableFields } from "./user.constant";
 import { TAuthUser } from "../../interfaces/common";
+import { Admin, Member, Prisma, UserRole, UserStatus } from "@prisma/client";
 
 const createAdminIntoDB = async (req: Request): Promise<Admin> => {
   const file = req.file as TFile;
