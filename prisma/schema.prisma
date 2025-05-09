@@ -19,8 +19,10 @@ model User {
   updatedAt          DateTime   @updatedAt
   admin              Admin?
   member             Member?
+  votes              Vote[]
   ideas              Idea[]
-  Vote               Vote[]
+  comments           Comment[]
+  payments           Payment[]
 
   @@map("users")
 }
@@ -80,14 +82,29 @@ model Idea {
   category     Category     @relation(fields: [categoryId], references: [id])
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
-  Vote         Vote[]
+  votes        Vote[]
+  comments     Comment[]
+  payments     Payment[]
 
   @@map("ideas")
 }
 
 model Comment {
-  id      String @id @default(uuid())
-  content String
+  id        String  @id @default(uuid())
+  content   String
+  isDeleted Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  String
+
+  idea   Idea   @relation(fields: [ideaId], references: [id])
+  ideaId String
+
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId String?
+  replies  Comment[] @relation("CommentReplies")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Vote {
@@ -101,6 +118,28 @@ model Vote {
   idea Idea @relation(fields: [ideaId], references: [id])
 
   @@unique([userId, ideaId])
+}
+
+model Payment {
+  id                 String        @id @default(uuid())
+  amount             Float
+  status             PaymentStatus
+  paymentGatewayData Json?
+  transactionId      String
+  user               User          @relation(fields: [userId], references: [id])
+  userId             String
+
+  ideaId    String
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID
 }
 
 enum VoteType {
