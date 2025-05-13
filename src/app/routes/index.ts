@@ -5,6 +5,7 @@ import { AuthRoutes } from "../modules/Auth/auth.routes";
 import { CategoryRoutes } from "../modules/Category/category.routes";
 import { VoteRoutes } from "../modules/vote/vote.routes";
 import { IdeaRoutes } from "../modules/idea/idea.routes";
+import { CommentRoutes } from "../modules/comment/comment.routes";
 
 const router = express.Router();
 
@@ -29,10 +30,10 @@ const moduleRoutes = [
     path: "/vote",
     route: VoteRoutes,
   },
-  // {
-  //   path: "/comment",
-  //   route: CommentRoutes,
-  // },
+  {
+    path: "/comment",
+    route: CommentRoutes,
+  },
   {
     path: "/idea",
     route: IdeaRoutes,

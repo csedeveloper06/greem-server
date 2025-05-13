@@ -163,15 +163,6 @@ const softDeleteIdeaFromDB = async (id: string): Promise<Idea | null> => {
         isDeleted: true,
       },
     });
-
-    // await transactionClent.user.update({
-    //   where: {
-    //     email: adminDeletedData.email,
-    //   },
-    //   data: {
-    //     status: UserStatus.DELETED,
-    //   },
-    // });
     return ideaDeletedData;
   });
   return result;
