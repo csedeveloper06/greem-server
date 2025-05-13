@@ -2,15 +2,8 @@ import { Comment } from "@prisma/client";
 import prisma from "../../../shared/Prisma";
 import { Request } from "express";
 
-interface CreateCommentInput {
-  content: string;
-  authorId: string;
-  ideaId: string;
-  parentId?: string | null;
-}
-
 const createCommentIntoDB = async (req: Request): Promise<Comment> => {
-  let commentData: CreateCommentInput = req.body;
+  let commentData = req.body;
   console.log(commentData);
   const result = await prisma.$transaction(async (transactionClient) => {
     return await transactionClient.comment.create({
