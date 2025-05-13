@@ -6,3 +6,4 @@ export const adminFilterableFields = [
 ];
 
 export const adminSearchableFields = ["name", "email", "contactNumber"];
+`6`;
