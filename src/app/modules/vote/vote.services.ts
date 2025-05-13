@@ -1,9 +1,11 @@
-import { Vote } from "@prisma/client";
+import { Vote, VoteType } from "@prisma/client";
 import prisma from "../../../shared/Prisma";
+import { Request } from "express";
 
-const createVoteIntoDB = async (req: Request): Promise<Vote | null> => {
-  let voteData = req.body;
+const createVoteIntoDB = async (req: Request): Promise<Vote> => {
+  const voteData = req.body;
   console.log(voteData);
+
   const result = await prisma.$transaction(async (transactionClient) => {
     return await transactionClient.vote.create({
       data: {

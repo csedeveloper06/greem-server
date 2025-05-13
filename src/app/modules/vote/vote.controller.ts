@@ -1,8 +1,8 @@
-import { Request, RequestHandler, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import httpStatus from "http-status";
 import { VoteServices } from "./vote.services";
+import { Request, RequestHandler, Response } from "express";
 
 const createVote = catchAsync(async (req: Request, res: Response) => {
   const result = await VoteServices.createVoteIntoDB(req);
