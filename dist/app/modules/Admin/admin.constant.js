@@ -8,3 +8,4 @@ exports.adminFilterableFields = [
     "contactNumber",
 ];
 exports.adminSearchableFields = ["name", "email", "contactNumber"];
+`6`;

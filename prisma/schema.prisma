@@ -60,7 +60,7 @@ model Member {
 
 model Category {
   id             String         @id @default(uuid())
-  categoryStatus CategoryStatus
+  categoryStatus CategoryStatus @unique
   icon           String?
   ideas          Idea[]
 
@@ -68,28 +68,52 @@ model Category {
 }
 
 model Idea {
-  id           String       @id @default(uuid())
-  title        String
-  categoryId   String
-  authorId     String
-  statement    String
-  solution     String
-  description  String
-  productPhoto String?
-  isDeleted    Boolean      @default(false)
-  publish      Boolean      @default(false)
-  price        Float?
-  reviewStatus ReviewStatus @default(UNDER_REVIEW)
-  isPaid       Boolean      @default(false)
-  user         User         @relation(fields: [authorId], references: [id])
-  category     Category     @relation(fields: [categoryId], references: [id])
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  votes        Vote[]
-  comments     Comment[]
-  payments     Payment[]
+  id            String        @id @default(uuid())
+  title         String
+  categoryId    String
+  authorId      String
+  statement     String
+  solution      String
+  description   String
+  productPhoto  String?
+  isDeleted     Boolean       @default(false)
+  publish       Boolean       @default(false)
+  paymentStatus PaymentStatus @default(FREE)
+  price         Float?
+  reviewStatus  ReviewStatus  @default(UNDER_REVIEW)
+  isPaid        Boolean       @default(false)
+  user          User          @relation(fields: [authorId], references: [id])
+  category      Category      @relation(fields: [categoryId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  votes         Vote[]
+  comments      Comment[]
+  payments      Payment[]
+  orderIdeas    OrderIdeas[]
 
   @@map("ideas")
+}
+
+model Order {
+  id         String       @id @default(uuid())
+  userId     String
+  totalPrice Float
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  orderIdeas OrderIdeas[]
+
+  @@map("orders")
+}
+
+model OrderIdeas {
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id])
+
+  ideaId String
+  idea   Idea   @relation(fields: [ideaId], references: [id])
+
+  @@id([orderId, ideaId])
+  @@map("order_ideas")
 }
 
 model Comment {
@@ -108,6 +132,8 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("comments")
 }
 
 model Vote {
@@ -122,6 +148,7 @@ model Vote {
   idea Idea @relation(fields: [ideaId], references: [id])
 
   @@unique([userId, ideaId])
+  @@map("votes")
 }
 
 model Payment {
@@ -132,6 +159,7 @@ model Payment {
   transactionId      String
   user               User          @relation(fields: [userId], references: [id])
   userId             String
+  orderId            String
 
   ideaId    String
   idea      Idea     @relation(fields: [ideaId], references: [id])
@@ -141,9 +169,15 @@ model Payment {
   @@map("payments")
 }
 
+enum OrderStatus {
+  PENDING
+  FAILED
+  DELIVERED
+}
+
 enum PaymentStatus {
   PAID
-  UNPAID
+  FREE
 }
 
 enum VoteType {

@@ -10,6 +10,16 @@ const getAllCategoriesFromDB = async () => {
 };
 
 const createCategoryIntoDB = async (req: Request) => {
+  const existingCategory = await prisma.category.findFirst({
+    where: {
+      categoryStatus: req.body.categoryStatus,
+    },
+  });
+
+  if (existingCategory) {
+    throw new Error("Category with this status already exists.");
+  }
+
   const file = req.file as TFile;
   if (file) {
     const uploadToCloudinary = await fileUploader.uploadToCloudinary(file);

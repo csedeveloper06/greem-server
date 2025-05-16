@@ -1,3 +1,4 @@
+import { PaymentStatus } from "@prisma/client";
 import { z } from "zod";
 const createIdea = z.object({
   title: z.string({ required_error: "Title is required" }),
@@ -7,7 +8,9 @@ const createIdea = z.object({
   solution: z.string({ required_error: "Solution is required" }),
   description: z.string({ required_error: "Description is required" }),
   productPhoto: z.string().optional(),
+  paymentStatus: z.enum([PaymentStatus.FREE, PaymentStatus.PAID]),
   price: z.number().optional(),
+  isPaid: z.boolean(),
 });
 
 export const IdeaValidations = {
