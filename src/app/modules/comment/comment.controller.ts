@@ -5,7 +5,7 @@ import catchAsync from "../../../shared/catchAsync";
 
 import { CommentServices } from "./comment.services";
 
-const createComment = catchAsync(async (req: Request, res: Response) => {
+const createComment = catchAsync(async (req, res) => {
   const result = await CommentServices.createCommentIntoDB(req);
 
   sendResponse(res, {

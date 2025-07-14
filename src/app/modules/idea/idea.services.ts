@@ -2,11 +2,11 @@ import { Idea, Prisma } from "@prisma/client";
 import prisma from "../../../shared/Prisma";
 import { TFile } from "../../interfaces/file";
 import { fileUploader } from "../../../helpers/fileUploader";
-import { Request } from "express";
 import { TIdeaFilterRequest } from "./idea.interface";
 import { TPaginationsOptions } from "../../interfaces/paginationInterface";
 import { paginationHelper } from "../../../helpers/pagination";
 import { ideaSearchableFields } from "./idea.constant";
+import { Request } from "express";
 
 const createIdeaIntoDB = async (req: Request): Promise<Idea> => {
   const file = req.file as TFile;
@@ -23,15 +23,14 @@ const createIdeaIntoDB = async (req: Request): Promise<Idea> => {
     return await transactionClient.idea.create({
       data: {
         title: ideaData.title,
+        categoryId: ideaData.categoryId,
+        authorId: ideaData.authorId,
         statement: ideaData.statement,
         solution: ideaData.solution,
         description: ideaData.description,
         productPhoto: ideaData.productPhoto,
-        paymentStatus: ideaData.paymentStatus,
         price: ideaData.price,
         isPaid: ideaData.isPaid,
-        authorId: ideaData.authorId,
-        categoryId: ideaData.categoryId,
       },
     });
   });

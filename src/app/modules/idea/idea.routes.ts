@@ -13,7 +13,7 @@ router.get("/:id", IdeaControllers.getSingleIdea);
 
 router.post(
   "/create-idea",
-  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MEMBER),
+  auth(UserRole.MEMBER),
   fileUploader.upload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     const ideaData = JSON.parse(req.body.data);
@@ -34,13 +34,13 @@ router.patch(
 
 router.delete(
   "/:id",
-  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MEMBER),
   IdeaControllers.deleteIdea
 );
 
 router.delete(
   "/soft/:id",
-  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.MEMBER),
   IdeaControllers.softDeleteIdea
 );
 

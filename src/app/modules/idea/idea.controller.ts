@@ -5,17 +5,20 @@ import sendResponse from "../../../shared/sendResponse";
 import catchAsync from "../../../shared/catchAsync";
 import { IdeaServices } from "./idea.services";
 import { ideaFilterableFields } from "./idea.constant";
+import { TAuthUser } from "../../interfaces/common";
 
-const createIdea = catchAsync(async (req: Request, res: Response) => {
-  const result = await IdeaServices.createIdeaIntoDB(req);
+const createIdea = catchAsync(
+  async (req: Request & { user?: TAuthUser }, res: Response) => {
+    const result = await IdeaServices.createIdeaIntoDB(req);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Idea created successfuly!",
-    data: result,
-  });
-});
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Idea created successfuly!",
+      data: result,
+    });
+  }
+);
 
 const getAllIdeas: RequestHandler = catchAsync(async (req, res) => {
   const filters = pick(req.query, ideaFilterableFields);

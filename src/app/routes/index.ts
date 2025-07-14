@@ -6,6 +6,11 @@ import { CategoryRoutes } from "../modules/Category/category.routes";
 import { VoteRoutes } from "../modules/vote/vote.routes";
 import { IdeaRoutes } from "../modules/idea/idea.routes";
 import { CommentRoutes } from "../modules/comment/comment.routes";
+import { OrderRoutes } from "../modules/order/Order.routes";
+import { OrderIdeaRoutes } from "../modules/orderidea/OrderIdea.routes";
+import { PaymentRoutes } from "../modules/Payment/payment.routes";
+// import { ReviewRoutes } from "../modules/Review/review.routes";
+import { MetaRoutes } from "../modules/Meta/meta.routes";
 
 const router = express.Router();
 
@@ -37,6 +42,26 @@ const moduleRoutes = [
   {
     path: "/idea",
     route: IdeaRoutes,
+  },
+  {
+    path: "/order",
+    route: OrderRoutes,
+  },
+  {
+    path: "/orderidea",
+    route: OrderIdeaRoutes,
+  },
+  {
+    path: "/payment",
+    route: PaymentRoutes,
+  },
+  // {
+  //   path: "/reviews",
+  //   route: ReviewRoutes,
+  // },
+  {
+    path: "/meta",
+    route: MetaRoutes,
   },
 ];
 

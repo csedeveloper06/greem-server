@@ -12,7 +12,7 @@ model User {
   id                 String     @id @default(uuid())
   email              String     @unique
   password           String
-  role               UserRole   @default(USER)
+  role               UserRole
   needPasswordChange Boolean    @default(true)
   status             UserStatus @default(ACTIVE)
   createdAt          DateTime   @default(now())
@@ -23,6 +23,8 @@ model User {
   ideas              Idea[]
   comments           Comment[]
   payments           Payment[]
+  orders             Order[]
+  reviews            Review[]
 
   @@map("users")
 }
@@ -68,7 +70,7 @@ model Category {
 }
 
 model Idea {
-  id            String        @id @default(uuid())
+  id            String       @id @default(uuid())
   title         String
   categoryId    String
   authorId      String
@@ -76,44 +78,25 @@ model Idea {
   solution      String
   description   String
   productPhoto  String?
-  isDeleted     Boolean       @default(false)
-  publish       Boolean       @default(false)
-  paymentStatus PaymentStatus @default(FREE)
+  isDeleted     Boolean      @default(false)
+  publish       Boolean      @default(false)
   price         Float?
-  reviewStatus  ReviewStatus  @default(UNDER_REVIEW)
-  isPaid        Boolean       @default(false)
-  user          User          @relation(fields: [authorId], references: [id])
-  category      Category      @relation(fields: [categoryId], references: [id])
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  votes         Vote[]
-  comments      Comment[]
-  payments      Payment[]
-  orderIdeas    OrderIdeas[]
+  reviewStatus  ReviewStatus @default(UNDER_REVIEW)
+  averageRating Float        @default(0.0)
+  isPaid        Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  user     User     @relation(fields: [authorId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+
+  votes      Vote[]
+  comments   Comment[]
+  orderIdeas OrderIdeas[]
+  reviews    Review[]
 
   @@map("ideas")
-}
-
-model Order {
-  id         String       @id @default(uuid())
-  userId     String
-  totalPrice Float
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  orderIdeas OrderIdeas[]
-
-  @@map("orders")
-}
-
-model OrderIdeas {
-  orderId String
-  order   Order  @relation(fields: [orderId], references: [id])
-
-  ideaId String
-  idea   Idea   @relation(fields: [ideaId], references: [id])
-
-  @@id([orderId, ideaId])
-  @@map("order_ideas")
 }
 
 model Comment {
@@ -151,32 +134,80 @@ model Vote {
   @@map("votes")
 }
 
+model Order {
+  id            String        @id @default(uuid())
+  userId        String
+  totalPrice    Float
+  orderStatus   OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  orderIdeas OrderIdeas[]
+  payments   Payment[]
+
+  @@map("orders")
+}
+
+model OrderIdeas {
+  orderId String
+  ideaId  String
+
+  order Order @relation(fields: [orderId], references: [id])
+  idea  Idea  @relation(fields: [ideaId], references: [id])
+
+  @@id([orderId, ideaId])
+  @@map("order_ideas")
+}
+
 model Payment {
   id                 String        @id @default(uuid())
-  amount             Float
-  status             PaymentStatus
-  paymentGatewayData Json?
-  transactionId      String
-  user               User          @relation(fields: [userId], references: [id])
   userId             String
   orderId            String
+  transactionId      String        @unique
+  amount             Float
+  status             PaymentStatus @default(UNPAID)
+  paymentGatewayData Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
 
-  ideaId    String
-  idea      Idea     @relation(fields: [ideaId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user  User  @relation(fields: [userId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
+
 
   @@map("payments")
 }
 
+model Review {
+  id         String   @id @default(uuid())
+  ideaId     String
+  userId     String
+  rating     Int
+  reviewDesc String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  idea Idea @relation(fields: [ideaId], references: [id])
+
+  @@unique([ideaId, userId])
+
+
+  @@map("reviews")
+}
+
 enum OrderStatus {
   PENDING
-  FAILED
+  INPROGRESS
   DELIVERED
+  CANCELLED
 }
 
 enum PaymentStatus {
   PAID
+  UNPAID
   FREE
 }
 
@@ -186,7 +217,6 @@ enum VoteType {
 }
 
 enum UserRole {
-  USER
   SUPER_ADMIN
   ADMIN
   MEMBER
